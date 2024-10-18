@@ -63,3 +63,35 @@ window.addEventListener('scroll', () => {
     });
 });
 
+// Animate numbers on scroll
+const animateNumbers = () => {
+    const stats = document.querySelectorAll('.stat-number');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const target = entry.target;
+                const finalNumber = parseInt(target.textContent);
+                let currentNumber = 0;
+                const increment = finalNumber / 50;
+                const timer = setInterval(() => {
+                    currentNumber += increment;
+                    if (currentNumber >= finalNumber) {
+                        target.textContent = finalNumber + (target.textContent.includes('+') ? '+' : '');
+                        clearInterval(timer);
+                    } else {
+                        target.textContent = Math.floor(currentNumber) + (target.textContent.includes('+') ? '+' : '');
+                    }
+                }, 30);
+                observer.unobserve(target);
+            }
+        });
+    }, { threshold: 0.5 });
+
+    stats.forEach(stat => {
+        observer.observe(stat);
+    });
+};
+
+// Initialize number animation when DOM is loaded
+document.addEventListener('DOMContentLoaded', animateNumbers);
+
